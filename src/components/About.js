@@ -24,12 +24,12 @@ function About() {
                             fontWeight="bold"
                             className="animated-name"
                         >
-                            Your Name
+                            Sai Krishna
                         </Text>
-                        , a frontend developer passionate about creating beautiful and user-friendly web applications.
+                        , a software developer passionate about creating beautiful and user-friendly web applications.
                     </Text>
                     <Text mt="2">
-                        I have experience with technologies like React, Angular, HTML, CSS, and JavaScript. I'm always eager to learn and take on new challenges in the world of web development.
+                        I have experience with technologies like React, Angular, Node, HTML, CSS, and JavaScript. I'm always eager to learn and take on new challenges in the world of web development.
                     </Text>
                 </Box>
             </Flex>
