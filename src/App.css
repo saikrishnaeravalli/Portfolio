@@ -36,3 +36,14 @@
     transform: rotate(360deg);
   }
 }
+
+/* Home.css */
+.home-container {
+  background-image: url('../2.jpeg');
+  /* background-color: red; */
+  background-size: cover; /* Adjust as needed */
+  background-repeat: no-repeat; /* Adjust as needed */
+  background-position: center center; /* Adjust as needed */
+}
+
+
