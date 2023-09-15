@@ -3,7 +3,7 @@
 /* Styling for desktop screens */
 .project-card {
     width: 25vw;
-    height: 30vh;
+    height: 40vh;
     perspective: 1000px;
     cursor: pointer;
     transform-style: preserve-3d;
@@ -15,7 +15,7 @@
   @media (max-width: 768px) {
     .project-card {
       width: 100vw !important; /* Full width for mobile screens */
-      height: 50vw !important; /* Allow height to adjust based on content on mobile screens */
+      height: 75vw !important; /* Allow height to adjust based on content on mobile screens */
       /* Remove margin for mobile screens */
       display: flex !important; /* Make cards stack vertically on mobile screens */
       flex-direction: column !important; /* Stack cards in a column on mobile screens */

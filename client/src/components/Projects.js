@@ -1,16 +1,16 @@
-// Projects.js
-
 import React, { useState, useEffect, useRef } from 'react';
 import {
+  Box,
   Button,
   Flex,
   SimpleGrid,
   VStack,
+  Heading,
 } from '@chakra-ui/react';
 import sampleImage from '../images/sampleLogo.jpeg';
 import sampleImage2 from '../images/sample.jpeg';
 
-import './Projects.css'; // Import the CSS file with the styles
+import './Projects.css';
 
 const projects = [
   {
@@ -31,7 +31,6 @@ const projects = [
     title: 'Flight Booking App',
     description: "Fly high with our MEAN stack-powered flight booking app. Discover the quickest, most convenient way to search, book, and manage your flights. Your journey begins with a single tap.",
   },
-  // Add more project titles and descriptions as needed
 ];
 
 const ProjectCard = ({ project }) => {
@@ -47,8 +46,7 @@ const ProjectCard = ({ project }) => {
   };
 
   useEffect(() => {
-    if (window.innerWidth <= 768) { // Check for mobile screens
-      // Calculate and set the card's height based on the content in the back side
+    if (window.innerWidth <= 768) {
       if (cardRef.current) {
         const cardHeight = isFlipped
           ? cardRef.current.querySelector('.back').scrollHeight
@@ -85,7 +83,9 @@ const Projects = () => (
     align="center"
     justify="center"
     minH="100vh"
+    direction="column"
   >
+    <Heading as="h1" size="xl" mb={8}>Portfolio</Heading>
     <VStack spacing={8} textAlign="center" maxW="800px">
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8} width="100%" height="100%">
         {projects.map((project, index) => (
