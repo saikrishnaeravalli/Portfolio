@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Flex,
   VStack,
@@ -14,8 +14,38 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import { FaEnvelope } from 'react-icons/fa';
+import axios from 'axios'; // Import Axios
 
 const ContactPage = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleSendMessage = async () => {
+    try {
+      // Create an object with the user's data
+      const data = {
+        name,
+        email,
+        message,
+      };
+
+      // Send a POST request to the backend's /send-email endpoint
+      const response = await axios.post('http://localhost:1150/send-email', data);
+
+      // Handle the response as needed (e.g., show a success message)
+      console.log('Email sent successfully:', response.data);
+
+      // Clear the form fields
+      setName('');
+      setEmail('');
+      setMessage('');
+    } catch (error) {
+      console.error('Error sending email:', error);
+      // Handle errors as needed (e.g., show an error message)
+    }
+  };
+
   return (
     <Flex
       id="contact"
@@ -45,17 +75,28 @@ const ContactPage = () => {
       >
         <FormControl id="name">
           <FormLabel>Name</FormLabel>
-          <Input type="text" />
+          <Input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
         </FormControl>
         <FormControl id="email">
           <FormLabel>Email</FormLabel>
-          <Input type="email" />
+          <Input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </FormControl>
         <FormControl id="message">
           <FormLabel>Message</FormLabel>
-          <Textarea />
+          <Textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
         </FormControl>
-        <Button colorScheme="teal" size="lg">
+        <Button colorScheme="teal" size="lg" onClick={handleSendMessage}>
           Send Message
         </Button>
         <Stack direction="row" align="center">
