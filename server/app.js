@@ -13,6 +13,11 @@ app.use(bodyParser.json());
 // Serve static files from the "public" directory
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+
 // Define a route to receive data from the frontend and send an email
 app.post('/send-email', async (req, res) => {
   try {

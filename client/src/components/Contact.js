@@ -31,7 +31,7 @@ const ContactPage = () => {
       };
 
       // Send a POST request to the backend's /send-email endpoint
-      const response = await axios.post('http://localhost:1150/send-email', data);
+      const response = await axios.post('/api/send-email', data);
 
       // Handle the response as needed (e.g., show a success message)
       console.log('Email sent successfully:', response.data);
