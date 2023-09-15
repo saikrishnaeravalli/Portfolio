@@ -7,17 +7,19 @@ import ProfessionalExperienceSection from './components/ProfessionalExperience';
 import EducationPage from './components/Education';
 import ContactPage from './components/Contact';
 import Footer from './components/Footer';
+import Home from './components/Home';
 
 function App() {
   return (
     <ChakraProvider>
-      <Header />
+      {/* <Header /> */}
+      <Home />
       <About />
       <Projects />
-      <ProfessionalExperienceSection />
-      <EducationPage />
+      {/* <ProfessionalExperienceSection /> */}
+      {/* <EducationPage /> */}
       <ContactPage />
-      <Footer />
+      {/* <Footer /> */}
     </ChakraProvider>
   );
 }

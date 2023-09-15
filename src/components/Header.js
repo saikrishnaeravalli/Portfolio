@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Flex, Link } from '@chakra-ui/react';
+import { Box, Flex, Link, Text } from '@chakra-ui/react';
 import { Link as ScrollLink } from 'react-scroll';
 
 function Header() {
@@ -25,7 +25,7 @@ function Header() {
         <Flex
             as="header"
             align="center"
-            justify="center"
+            justifyContent="space-between" // Adjusted justifyContent
             p="4"
             boxShadow="md"
             position="sticky"
@@ -35,36 +35,40 @@ function Header() {
             color="white"
             transition="background-color 0.3s ease-in-out"
         >
-            <Flex maxW="800px" justify="space-between" width="100%" p="2">
-                <Box>
-                    <ScrollLink to="about" smooth={true} duration={500} offset={-50} spy={true} exact="true">
-                        <Link mr="4" _hover={{ textDecoration: 'underline' }}>
-                            About
-                        </Link>
-                    </ScrollLink>
-                    <ScrollLink to="projects" smooth={true} duration={500} offset={-50} spy={true} exact="true">
-                        <Link mr="4" _hover={{ textDecoration: 'underline' }}>
-                            Projects
-                        </Link>
-                    </ScrollLink>
-                    <ScrollLink to="professional-experience" smooth={true} duration={500} offset={-50} spy={true} exact="true">
-                        <Link mr="4" _hover={{ textDecoration: 'underline' }}>
-                            Experience
-                        </Link>
-                    </ScrollLink>
-                    <ScrollLink to="education" smooth={true} duration={500} offset={-50} spy={true} exact="true">
-                        <Link mr="4" _hover={{ textDecoration: 'underline' }}>
-                            Education
-                        </Link>
-                    </ScrollLink>
-                    <ScrollLink to="contact" smooth={true} duration={500} offset={-50} spy={true} exact="true">
-                        <Link mr="4" _hover={{ textDecoration: 'underline' }}>
-                            Contact
-                        </Link>
-                    </ScrollLink>
-                    {/* Add more links with ScrollLink and Link as needed */}
-                </Box>
-            </Flex>
+            {/* Logo */}
+            <Text fontSize="xl" fontWeight="bold" fontStyle="italic">
+                SK
+            </Text>
+
+            {/* Navigation Links */}
+            <Box>
+                <ScrollLink to="about" smooth={true} duration={500} offset={-50} spy={true} exact="true">
+                    <Link mr="4" _hover={{ textDecoration: 'underline' }}>
+                        About
+                    </Link>
+                </ScrollLink>
+                <ScrollLink to="projects" smooth={true} duration={500} offset={-50} spy={true} exact="true">
+                    <Link mr="4" _hover={{ textDecoration: 'underline' }}>
+                        Projects
+                    </Link>
+                </ScrollLink>
+                <ScrollLink to="professional-experience" smooth={true} duration={500} offset={-50} spy={true} exact="true">
+                    <Link mr="4" _hover={{ textDecoration: 'underline' }}>
+                        Experience
+                    </Link>
+                </ScrollLink>
+                <ScrollLink to="education" smooth={true} duration={500} offset={-50} spy={true} exact="true">
+                    <Link mr="4" _hover={{ textDecoration: 'underline' }}>
+                        Education
+                    </Link>
+                </ScrollLink>
+                <ScrollLink to="contact" smooth={true} duration={500} offset={-50} spy={true} exact="true">
+                    <Link mr="4" _hover={{ textDecoration: 'underline' }}>
+                        Contact
+                    </Link>
+                </ScrollLink>
+                {/* Add more links with ScrollLink and Link as needed */}
+            </Box>
         </Flex>
     );
 }
