@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+// Projects.js
+
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Button,
   Flex,
@@ -34,6 +36,7 @@ const projects = [
 
 const ProjectCard = ({ project }) => {
   const [isFlipped, setIsFlipped] = useState(false);
+  const cardRef = useRef(null);
 
   const handleCardHover = () => {
     setIsFlipped(!isFlipped);
@@ -43,8 +46,21 @@ const ProjectCard = ({ project }) => {
     setIsFlipped(false);
   };
 
+  useEffect(() => {
+    if (window.innerWidth <= 768) { // Check for mobile screens
+      // Calculate and set the card's height based on the content in the back side
+      if (cardRef.current) {
+        const cardHeight = isFlipped
+          ? cardRef.current.querySelector('.back').scrollHeight
+          : cardRef.current.querySelector('.front').scrollHeight;
+        cardRef.current.style.height = `${cardHeight}px`;
+      }
+    }
+  }, [isFlipped]);
+
   return (
     <div
+      ref={cardRef}
       className={`project-card ${isFlipped ? 'flipped' : ''}`}
       onMouseEnter={handleCardHover}
       onMouseLeave={handleMouseLeave}
@@ -54,7 +70,7 @@ const ProjectCard = ({ project }) => {
           <div className="project-title">{project.title}</div>
         </div>
         <div className={`back ${isFlipped ? '' : 'hidden'}`} style={{ backgroundColor: "#BBC7CE" }}>
-          <div style={{fontSize:'16px'}}>{project.description}</div>
+          <div style={{ fontSize: '16px' }}>{project.description}</div>
         </div>
       </div>
     </div>
