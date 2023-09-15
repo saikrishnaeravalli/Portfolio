@@ -1,0 +1,11 @@
+/* Define responsive styles for screens smaller than a certain width (e.g., 600px) */
+@media (max-width: 600px) {
+    .responsive-text {
+      width: 100%;
+      max-width: none;
+    }
+  }
+  
+  /* Add your other CSS styles here */
+  /* ... */
+  
