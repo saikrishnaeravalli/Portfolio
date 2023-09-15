@@ -35,7 +35,7 @@ function Home() {
   const openResumeInNewTab = async () => {
     try {
       // Make a GET request to your backend's /download-resume route
-      const response = await axios.get('http://localhost:1150/download-resume', {
+      const response = await axios.get('/api/download-resume', {
         responseType: 'blob', // Set the response type to 'blob' to handle binary data (e.g., PDF)
       });
 
