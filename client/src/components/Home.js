@@ -1,57 +1,56 @@
-// Home.js
 import React, { useEffect, useState } from 'react';
-import { Box, Flex, IconButton, Link, Text } from '@chakra-ui/react';
-import { FaGithub, FaLinkedin } from 'react-icons/fa';
+import { Box, Flex, IconButton, Link as ChakraLink, Text } from '@chakra-ui/react';
+import { FaGithub, FaLinkedin, FaBars } from 'react-icons/fa';
 import { Link as ScrollLink } from 'react-scroll';
-import axios from 'axios'; // Import Axios
-import sampleImage from '../images/3.jpg'; // Adjust the path as needed
-import { css } from '@emotion/react'; // Import the css function
+import axios from 'axios';
+import sampleImage from '../images/3.jpg';
+import { css } from '@emotion/react';
 
 function Home() {
   const [isNameTransitioned, setIsNameTransitioned] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    // Trigger the initial transition after 3 seconds of page loading
     const initialTimeoutId = setTimeout(() => {
       setIsNameTransitioned(true);
     }, 1000);
 
-    // Clear the initial timeout on unmount to prevent potential memory leaks
     return () => clearTimeout(initialTimeoutId);
   }, []);
 
   useEffect(() => {
-    // Set a timeout to reset the transition back to normal after 1 second
     if (isNameTransitioned) {
       const resetTimeoutId = setTimeout(() => {
         setIsNameTransitioned(false);
-      }, 1000);
+      }, 3000); // Delay for 3 seconds before closing
 
-      // Clear the reset timeout on unmount to prevent potential memory leaks
       return () => clearTimeout(resetTimeoutId);
     }
   }, [isNameTransitioned]);
 
   const openResumeInNewTab = async () => {
     try {
-      // Make a GET request to your backend's /download-resume route
       const response = await axios.get('/api/download-resume', {
-        responseType: 'blob', // Set the response type to 'blob' to handle binary data (e.g., PDF)
+        responseType: 'blob',
       });
 
-      // Create a blob URL for the resume file
       const blob = new Blob([response.data], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
 
-      // Open the resume in a new tab
       window.open(url, '_blank');
 
-      // Release the blob URL when the tab is closed
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Error downloading resume:', error);
-      // Handle errors as needed
     }
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   return (
@@ -60,14 +59,14 @@ function Home() {
         position: 'relative',
         minHeight: '100vh',
         overflow: 'hidden',
-        display: 'flex', // Use Flexbox to center content
-        flexDirection: 'column', // Stack children vertically
-        justifyContent: 'center', // Center vertically
-        alignItems: 'center', // Center horizontally
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
       }}
     >
-      {/* Pseudo-element for the blurred background */}
       <div
+        id="top" // Add this ID to scroll to the top
         style={{
           position: 'absolute',
           top: '0',
@@ -78,24 +77,148 @@ function Home() {
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center center',
-          filter: 'blur(2px)', // Adjust the blur intensity as needed
-          zIndex: '-1', // Place the blurred background behind content
+          filter: 'blur(2px)',
+          zIndex: '-1',
         }}
       ></div>
 
+      {/* LinkedIn and GitHub icons (always on the right) */}
       <Flex
-        as="header"
-        align="center"
-        justifyContent="space-between"
-        p="4"
-        top="0"
-        width="100%"
-        color="black"
-        zIndex="999"
+        as="div"
+        position="fixed"
+        top="4"
+        right="4"
+        zIndex="1000"
       >
-        <Box fontSize="18px" mx={'auto'}>
+        <IconButton
+          as="a"
+          href="https://www.linkedin.com/in/saikrishnaeravalli/"
+          target="_blank"
+          aria-label="LinkedIn"
+          icon={<FaLinkedin />}
+          fontSize="20px"
+          color="black"
+          bg="transparent"
+          _hover={{ color: '#0077B5', bg: 'transparent', fontSize: '28px' }}
+          mr={2}
+        />
+
+        <IconButton
+          as="a"
+          href="https://github.com/saikrishnaeravalli"
+          target="_blank"
+          aria-label="GitHub"
+          icon={<FaGithub />}
+          fontSize="20px"
+          color="black"
+          bg="transparent"
+          _hover={{ color: 'black', bg: 'transparent', fontSize: '28px' }}
+        />
+      </Flex>
+
+      {/* Render the menu icon */}
+      <IconButton
+        as="button"
+        aria-label="Menu"
+        icon={<FaBars />}
+        fontSize="20px"
+        color="black" // Display in black color
+        bg="transparent"
+        onClick={toggleMobileMenu} // Open the menu
+        display={{ base: 'block', md: 'none' }}
+        position="absolute"
+        top="4"
+        left="4"
+        zIndex="1000"
+      />
+
+      {isMobileMenuOpen ? (
+        // Render the mobile menu when it's open
+        <Flex
+          as="nav"
+          flexDir="column"
+          position="fixed"
+          top="0"
+          left="0"
+          width="100%"
+          height="100%"
+          bg="rgba(255, 255, 255, 0.9)"
+          zIndex="1000"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <ScrollLink
+            to="top" // Scroll to the top
+            smooth={true}
+            duration={500}
+            spy={true}
+            exact="true"
+            onClick={closeMobileMenu}
+          >
+            <ChakraLink mb="4">Home</ChakraLink>
+          </ScrollLink>
+          <ScrollLink
+            to="about"
+            smooth={true}
+            duration={500}
+            spy={true}
+            exact="true"
+            onClick={closeMobileMenu}
+          >
+            <ChakraLink mb="4">About</ChakraLink>
+          </ScrollLink>
+          <ScrollLink
+            to="projects"
+            smooth={true}
+            duration={500}
+            spy={true}
+            exact="true"
+            onClick={closeMobileMenu}
+          >
+            <ChakraLink mb="4">Portfolio</ChakraLink>
+          </ScrollLink>
+          <ChakraLink onClick={openResumeInNewTab} mb="4">
+            Resume
+          </ChakraLink>
+          <ScrollLink
+            to="contact"
+            smooth={true}
+            duration={500}
+            spy={true}
+            exact="true"
+            onClick={closeMobileMenu}
+          >
+            <ChakraLink>Contact</ChakraLink>
+          </ScrollLink>
+        </Flex>
+      ) : (
+        // Render individual navigation links on larger screens
+        <Box
+          display={{ base: 'none', md: 'block' }}
+          fontSize="18px"
+          mx={'auto'}
+          position="fixed"
+          top="0"
+          left="0"
+          width="100%"
+          p="4"
+          color="black"
+          zIndex="999"
+        >
+          <ScrollLink to="top" smooth={true} duration={500} spy={true} exact="true">
+            <ChakraLink
+              mr="4"
+              _hover={{
+                color: 'teal',
+                fontSize: '24px',
+                transition: 'color 0.3s ease-in-out, font-size 0.3s ease-in-out',
+              }}
+            >
+              Home
+            </ChakraLink>
+          </ScrollLink>
           <ScrollLink to="about" smooth={true} duration={500} spy={true} exact="true">
-            <Link
+            <ChakraLink
               mr="4"
               _hover={{
                 color: 'teal',
@@ -104,10 +227,10 @@ function Home() {
               }}
             >
               About
-            </Link>
+            </ChakraLink>
           </ScrollLink>
           <ScrollLink to="projects" smooth={true} duration={500} spy={true} exact="true">
-            <Link
+            <ChakraLink
               mr="4"
               _hover={{
                 color: 'teal',
@@ -116,23 +239,21 @@ function Home() {
               }}
             >
               Portfolio
-            </Link>
+            </ChakraLink>
           </ScrollLink>
-          {/* Resume Link */}
-          <Link
+          <ChakraLink
             mr="4"
             _hover={{
               color: 'teal',
               fontSize: '24px',
               transition: 'color 0.3s ease-in-out, font-size 0.3s ease-in-out',
             }}
-            onClick={openResumeInNewTab} // Handle click event to open the resume
+            onClick={openResumeInNewTab}
           >
             Resume
-          </Link>
+          </ChakraLink>
           <ScrollLink to="contact" smooth={true} duration={500} spy={true} exact="true">
-            <Link
-              mr="4"
+            <ChakraLink
               _hover={{
                 color: 'teal',
                 fontSize: '24px',
@@ -140,50 +261,24 @@ function Home() {
               }}
             >
               Contact
-            </Link>
+            </ChakraLink>
           </ScrollLink>
         </Box>
-        <Box>
-          {/* LinkedIn and GitHub Links */}
-          <IconButton
-            as="a"
-            href="https://www.linkedin.com/in/saikrishnaeravalli/"
-            target="_blank"
-            aria-label="LinkedIn"
-            icon={<FaLinkedin />}
-            fontSize="20px"
-            color="black" // Set the icon color to black
-            bg="transparent" // Set the background to transparent
-            _hover={{ color: '#0077B5', bg: 'transparent', fontSize: '28px' }} // Set the hover color and background to transparent
-            mr={2}
-          />
-
-          <IconButton
-            as="a"
-            href="https://github.com/saikrishnaeravalli"
-            target="_blank"
-            aria-label="GitHub"
-            icon={<FaGithub />}
-            fontSize="20px"
-            color="black" // Set the icon color to black
-            bg="transparent" // Set the background to transparent
-            _hover={{ color: 'black', bg: 'transparent', fontSize: '28px' }} // Set the hover color and background to transparent
-          />
-        </Box>
-      </Flex>
+      )}
 
       <Flex
         flex="1"
         align="center"
         justifyContent="center"
-        flexDirection="column" // Center content vertically
-        textAlign="center" // Center text horizontally
+        flexDirection="column"
+        textAlign="center"
       >
         <Box textAlign="center" fontFamily="IBM Plex Sans KR" color="black">
           <Text
+            id="home"
             fontSize={{
-              base: '36px', // Default font size for mobile screens
-              md: '64px', // Font size for larger screens (e.g., tablets and desktops)
+              base: '36px',
+              md: '64px',
             }}
             fontWeight="bold"
           >
@@ -191,8 +286,9 @@ function Home() {
             <span
               css={css`
                 color: ${isNameTransitioned ? 'teal' : 'black'};
-                font-size: ${isNameTransitioned ? '48px' : '36px'};
-                transition: color 0.3s ease-in-out, font-size 0.3s ease-in-out;
+                font-size: ${isNameTransitioned ? '64px' : '36px'};
+                transition: color 1s ease-in-out, font-size 1s ease-in-out;
+                display: inline-block;
               `}
             >
               Sai Krishna
