@@ -11,15 +11,10 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Serve static files from the "public" directory
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
+app.use(express.static(path.join(__dirname, 'build')));
 
 // Define a route to receive data from the frontend and send an email
-app.post('/send-email', async (req, res) => {
+app.post('/api/send-email', async (req, res) => {
   try {
     // Extract data from the request body
     const { name, email, message } = req.body;
@@ -53,10 +48,14 @@ app.post('/send-email', async (req, res) => {
 });
 
 // Define a route to serve the resume file for download
-app.get('/download-resume', (req, res) => {
+app.get('/api/download-resume', (req, res) => {
   const filePath = path.join(__dirname, 'public', 'resume.pdf');
   res.sendFile(filePath);
 });
+
+app.get('/*', function(req, res) {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  });
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

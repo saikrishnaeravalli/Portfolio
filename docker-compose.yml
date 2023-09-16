@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+
+  portfolio-app:
+    build:
+      context: ./
+      dockerfile: Dockerfile.ws
+    volumes:
+      - .:/usr/src/
+      - /usr/src/node_modules
+    ports:
+      - "1150:1150"
