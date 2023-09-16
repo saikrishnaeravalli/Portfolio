@@ -12,14 +12,19 @@ import {
   Link,
   Icon,
   Stack,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  CloseButton,
 } from '@chakra-ui/react';
-import { FaEnvelope } from 'react-icons/fa';
+import { FaEnvelope, FaCheck } from 'react-icons/fa'; // Import FaCheck icon
 import axios from 'axios'; // Import Axios
 
 const ContactPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [showSuccessNotification, setShowSuccessNotification] = useState(false);
 
   const handleSendMessage = async () => {
     try {
@@ -36,6 +41,9 @@ const ContactPage = () => {
       // Handle the response as needed (e.g., show a success message)
       console.log('Email sent successfully:', response.data);
 
+      // Display success notification
+      setShowSuccessNotification(true);
+
       // Clear the form fields
       setName('');
       setEmail('');
@@ -43,6 +51,13 @@ const ContactPage = () => {
     } catch (error) {
       console.error('Error sending email:', error);
       // Handle errors as needed (e.g., show an error message)
+    }
+  };
+
+  // Function to reset the success notification when form fields are edited
+  const handleFormInputChange = () => {
+    if (showSuccessNotification) {
+      setShowSuccessNotification(false);
     }
   };
 
@@ -78,7 +93,10 @@ const ContactPage = () => {
           <Input
             type="text"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              handleFormInputChange(); // Call the function to reset the success notification
+              setName(e.target.value);
+            }}
           />
         </FormControl>
         <FormControl id="email">
@@ -86,19 +104,47 @@ const ContactPage = () => {
           <Input
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              handleFormInputChange(); // Call the function to reset the success notification
+              setEmail(e.target.value);
+            }}
           />
         </FormControl>
         <FormControl id="message">
           <FormLabel>Message</FormLabel>
           <Textarea
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={(e) => {
+              handleFormInputChange(); // Call the function to reset the success notification
+              setMessage(e.target.value);
+            }}
           />
         </FormControl>
         <Button colorScheme="teal" size="lg" onClick={handleSendMessage}>
           Send Message
         </Button>
+        {showSuccessNotification && (
+          <Alert
+            status="success"
+            variant="solid"
+            borderRadius="md"
+            alignItems="center"
+            justifyContent="center"
+            textAlign="center"
+            mt={4}
+            color="green" // Set text color to green
+            bg="transparent" // Remove background color
+          >
+            <AlertIcon as={FaCheck} color="green.500" boxSize={6} />
+            <AlertTitle ml={2}>Message Sent!</AlertTitle>
+            <CloseButton
+              onClick={() => setShowSuccessNotification(false)}
+              position="absolute"
+              right="8px"
+              top="8px"
+            />
+          </Alert>
+        )}
         <Stack direction="row" align="center">
           <Text fontWeight="bold" color="black">
             You can{' '}
