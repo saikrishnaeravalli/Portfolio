@@ -13,7 +13,8 @@ function About() {
         "Python",
         "Java",
         "SQL",
-        "NoSQL"
+        "NoSQL",
+        "AWS Certified Cloud Practitioner"
     ];
 
     return (
