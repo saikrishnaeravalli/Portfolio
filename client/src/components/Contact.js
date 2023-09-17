@@ -16,50 +16,88 @@ import {
   AlertIcon,
   AlertTitle,
   CloseButton,
+  FormErrorMessage,
 } from '@chakra-ui/react';
-import { FaEnvelope, FaCheck } from 'react-icons/fa'; // Import FaCheck icon
-import axios from 'axios'; // Import Axios
+import { FaEnvelope, FaCheck } from 'react-icons/fa';
+import axios from 'axios';
 
 const ContactPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
+  const [emailError, setEmailError] = useState('');
+  const [nameError, setNameError] = useState('');
+  const [messageError, setMessageError] = useState('');
+
+  const validateEmail = (email) => {
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return emailPattern.test(email);
+  };
 
   const handleSendMessage = async () => {
+    if (!validateEmail(email)) {
+      setEmailError('Invalid email format');
+      return;
+    }
+    if (!name) {
+      setNameError('Name is required');
+      return;
+    }
+    if (!message) {
+      setMessageError('Message is required');
+      return;
+    }
+
     try {
-      // Create an object with the user's data
       const data = {
         name,
         email,
         message,
       };
 
-      // Send a POST request to the backend's /send-email endpoint
       const response = await axios.post('/api/send-email', data);
 
-      // Handle the response as needed (e.g., show a success message)
       console.log('Email sent successfully:', response.data);
 
-      // Display success notification
       setShowSuccessNotification(true);
 
-      // Clear the form fields
       setName('');
       setEmail('');
       setMessage('');
+      setEmailError('');
+      setNameError('');
+      setMessageError('');
     } catch (error) {
       console.error('Error sending email:', error);
-      // Handle errors as needed (e.g., show an error message)
     }
   };
 
-  // Function to reset the success notification when form fields are edited
+  const handleEmailBlur = () => {
+    if (email && !validateEmail(email)) {
+      setEmailError('Invalid email format');
+    } else {
+      setEmailError('');
+    }
+  };
+
   const handleFormInputChange = () => {
     if (showSuccessNotification) {
       setShowSuccessNotification(false);
     }
+    if (emailError) {
+      setEmailError('');
+    }
+    if (nameError) {
+      setNameError('');
+    }
+    if (messageError) {
+      setMessageError('');
+    }
   };
+
+  // Disable the "Send Message" button if any required field is empty or if email format is invalid
+  const isSendMessageDisabled = !name || !email || !message || !validateEmail(email);
 
   return (
     <Flex
@@ -88,39 +126,48 @@ const ContactPage = () => {
         color="#654321"
         width="80%"
       >
-        <FormControl id="name">
+        <FormControl id="name" isRequired>
           <FormLabel>Name</FormLabel>
           <Input
             type="text"
             value={name}
             onChange={(e) => {
-              handleFormInputChange(); // Call the function to reset the success notification
+              handleFormInputChange();
               setName(e.target.value);
             }}
           />
+          {nameError && <FormErrorMessage>{nameError}</FormErrorMessage>}
         </FormControl>
-        <FormControl id="email">
+        <FormControl id="email" isRequired isInvalid={emailError}>
           <FormLabel>Email</FormLabel>
           <Input
             type="email"
             value={email}
+            onBlur={handleEmailBlur}
             onChange={(e) => {
-              handleFormInputChange(); // Call the function to reset the success notification
+              handleFormInputChange();
               setEmail(e.target.value);
             }}
           />
+          {emailError && <FormErrorMessage>{emailError}</FormErrorMessage>}
         </FormControl>
-        <FormControl id="message">
+        <FormControl id="message" isRequired>
           <FormLabel>Message</FormLabel>
           <Textarea
             value={message}
             onChange={(e) => {
-              handleFormInputChange(); // Call the function to reset the success notification
+              handleFormInputChange();
               setMessage(e.target.value);
             }}
           />
+          {messageError && <FormErrorMessage>{messageError}</FormErrorMessage>}
         </FormControl>
-        <Button colorScheme="teal" size="lg" onClick={handleSendMessage}>
+        <Button
+          colorScheme="teal"
+          size="lg"
+          onClick={handleSendMessage}
+          isDisabled={isSendMessageDisabled}
+        >
           Send Message
         </Button>
         {showSuccessNotification && (
@@ -132,8 +179,8 @@ const ContactPage = () => {
             justifyContent="center"
             textAlign="center"
             mt={4}
-            color="green" // Set text color to green
-            bg="transparent" // Remove background color
+            color="green"
+            bg="transparent"
           >
             <AlertIcon as={FaCheck} color="green.500" boxSize={6} />
             <AlertTitle ml={2}>Message Sent!</AlertTitle>

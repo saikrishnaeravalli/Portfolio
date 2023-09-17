@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Flex, IconButton, Link as ChakraLink, Text } from '@chakra-ui/react';
+import { Box, Flex, IconButton, Link as ChakraLink, Text, useMediaQuery } from '@chakra-ui/react';
 import { FaGithub, FaLinkedin, FaBars } from 'react-icons/fa';
 import { Link as ScrollLink } from 'react-scroll';
 import axios from 'axios';
 import sampleImage from '../images/3.jpg';
 import { css } from '@emotion/react';
+import { useSpring, animated } from 'react-spring';
 
 function Home() {
   const [isNameTransitioned, setIsNameTransitioned] = useState(false);
@@ -17,16 +18,6 @@ function Home() {
 
     return () => clearTimeout(initialTimeoutId);
   }, []);
-
-  useEffect(() => {
-    if (isNameTransitioned) {
-      const resetTimeoutId = setTimeout(() => {
-        setIsNameTransitioned(false);
-      }, 3000); // Delay for 3 seconds before closing
-
-      return () => clearTimeout(resetTimeoutId);
-    }
-  }, [isNameTransitioned]);
 
   const openResumeInNewTab = async () => {
     try {
@@ -53,6 +44,23 @@ function Home() {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  // Use useMediaQuery to check if it's a mobile screen
+  const [isMobileScreen] = useMediaQuery("(max-width: 768px)");
+
+  // Define the spring for the animation based on screen size
+  const nameSpring = useSpring({
+    from: { fontSize: isMobileScreen ? '36px' : '64px', color: 'black' },
+    to: async (next) => {
+      await next({ fontSize: isMobileScreen ? '48px' : '96px', color: 'teal' });
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for 1 second
+      await next({ fontSize: isMobileScreen ? '36px' : '64px', color: 'black' });
+    },
+    config: {
+      duration: 1000, // Animation duration (1 second)
+    },
+    delay: 500, // Delay the animation by 0.5 seconds
+  });
+
   return (
     <div
       style={{
@@ -66,7 +74,7 @@ function Home() {
       }}
     >
       <div
-        id="top" // Add this ID to scroll to the top
+        id="top"
         style={{
           position: 'absolute',
           top: '0',
@@ -122,9 +130,9 @@ function Home() {
         aria-label="Menu"
         icon={<FaBars />}
         fontSize="20px"
-        color="black" // Display in black color
+        color="black"
         bg="transparent"
-        onClick={toggleMobileMenu} // Open the menu
+        onClick={toggleMobileMenu}
         display={{ base: 'block', md: 'none' }}
         position="absolute"
         top="4"
@@ -148,7 +156,7 @@ function Home() {
           justifyContent="center"
         >
           <ScrollLink
-            to="top" // Scroll to the top
+            to="top"
             smooth={true}
             duration={500}
             spy={true}
@@ -277,24 +285,19 @@ function Home() {
           <Text
             id="home"
             fontSize={{
-              base: '36px',
-              md: '64px',
+              base: isMobileScreen ? '36px' : '64px',
+              md: isMobileScreen ? '48px' : '64px',
             }}
             fontWeight="bold"
           >
             Hi, I’m{' '}
-            <span
-              css={css`
-                color: ${isNameTransitioned ? 'teal' : 'black'};
-                font-size: ${isNameTransitioned ? '64px' : '36px'};
-                transition: color 1s ease-in-out, font-size 1s ease-in-out;
-                display: inline-block;
-              `}
+            <animated.span
+              style={nameSpring}
             >
               Sai Krishna
-            </span>
+            </animated.span>
           </Text>
-          <Text fontSize="36px">
+          <Text fontSize={'36px'}>
             A Passionate Full Stack Developer Turning Ideas Into Reality
           </Text>
         </Box>
