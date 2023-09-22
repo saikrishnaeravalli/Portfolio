@@ -1,17 +1,54 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
+const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
+const cron = require('node-cron');
+require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 1150;
+let visitCount = 0;
+const counterFilePath = path.join(__dirname, 'visitCount.txt');
+if (fs.existsSync(counterFilePath)) {
+  visitCount = Number(fs.readFileSync(counterFilePath, 'utf-8')) || 0;
+}
 app.use(cors());
-
 app.use(bodyParser.json());
-
-// Serve static files from the "public" directory
 app.use(express.static(path.join(__dirname, 'build')));
+
+const transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+// Schedule a task to run at the end of the day (23:59:00)
+cron.schedule('0 59 23 * * *', () => {
+  // Read the visit count from the file
+  if (fs.existsSync(counterFilePath)) {
+    visitCount = Number(fs.readFileSync(counterFilePath, 'utf-8')) || 0;
+  }
+
+  // Define email data
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: process.env.RECIPIENT_EMAIL,
+    subject: 'Daily Visit Count',
+    text: `The website has been visited ${visitCount} times today.`,
+  };
+
+  // Send the email
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return console.log(error);
+    }
+    console.log('Message sent: %s', info.messageId);
+  });
+});
 
 // Define a route to receive data from the frontend and send an email
 app.post('/api/send-email', async (req, res) => {
@@ -53,9 +90,20 @@ app.get('/api/download-resume', (req, res) => {
   res.sendFile(filePath);
 });
 
-app.get('/*', function(req, res) {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
-  });
+app.post('/api/record-visit', (req, res) => {
+  if (req.method === 'POST') {
+    // Increment the visit counter
+    visitCount++;
+    // Update the visit count in the file
+    fs.writeFileSync(counterFilePath, visitCount.toString());
+    console.log(`Website has been visited ${visitCount} times`);
+  }
+  res.status(200).send('Visit recorded successfully');
+});
+
+app.get('/*', function (req, res) {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
