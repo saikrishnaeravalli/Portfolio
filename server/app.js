@@ -60,15 +60,15 @@ app.post('/api/send-email', async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: 'Gmail', // Use your email service (e.g., Gmail)
       auth: {
-        user: 'eravallisaikrishna@gmail.com', // Replace with your email address
-        pass: 'iinypvapasgkykhy', // Replace with your email password or use environment variables
+        user: process.env.EMAIL_USER, // Replace with your email address
+        pass: process.env.EMAIL_PASS, // Replace with your email password or use environment variables
       },
     });
 
     // Define email data
     const mailOptions = {
-      from: 'eravallisaikrishna@gmail.com',
-      to: 'saikrishnaeravalli@gmail.com', // Replace with the recipient's email address
+      from: process.env.EMAIL_USER,
+      to: process.env.RECIPIENT_EMAIL, // Replace with the recipient's email address
       subject: 'New Message from Your Website',
       text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
     };
